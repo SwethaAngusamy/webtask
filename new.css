@@ -1,0 +1,183 @@
+body {
+    font-family: "Lato", sans-serif;
+  }
+  
+  .sidenav {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #000000;;
+    overflow-x: hidden;
+    padding-top: 60px;
+  }
+  .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #f3e9e9;
+    display: block;
+  }
+  .sidenav a img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  .sidenav a:hover {
+    color: #f1f1f1;
+  }
+  
+  .sidenav-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end; /* Align buttons to the right */
+    padding: 10px;
+    border: #45a049;
+  }
+  
+  .publish-button,
+  .preview-button {
+    padding: 10px 20px; /* Add some padding to the buttons */
+    border: #45a049;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .publish-button {
+    background-color: #4caf50;
+    margin: 5px;
+    
+  }
+  
+  .publish-button:hover {
+    background-color: #45a049;
+  }
+  
+  .preview-button {
+    background-color: #fcfcfc;
+    margin: 5px;
+    color: black;
+    border: 1px solid #5ac77b;
+  }
+  
+  .preview-button:hover {
+    background-color: #f1ecf1;
+   
+  }
+  
+  #form-builder {
+    display: flex;
+  }
+  
+#clear-button,#save-button{
+  width: 80px; 
+  height: 30px;
+}
+
+
+  
+  #toolbox {
+    width: 150px;
+    min-height: 300px;
+    padding: 20px;
+    border: 5px solid #ccc;
+  }
+  
+  #toolbox .draggable {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    cursor: move;
+  }
+  #form-preview {
+    padding: 250px;
+    border: 1px solid #070707;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 610px;
+    margin-left: calc(310px + 50px);
+    margin: auto;
+    margin-left: 200px;
+    
+  }
+  .down-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 10px;
+  }
+  
+  .button1,
+  .button2 {
+    padding: 10px 20px;
+    border: #45a049;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .button1 {
+    background-color: #4caf50;
+    margin: 5px;
+   
+  }
+  
+  .button1:hover {
+    background-color: #45a049;
+  }
+  
+  .button2 {
+    background-color: #f3f3f3;
+    margin: 5px;
+    width: 200px; 
+    padding: 10px;
+  }
+  
+  .button2:hover {
+    background-color: #f0f0f0;
+  }
+  .layout {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .layout-section {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ec0909;
+    margin: 5px;
+  }
+  
+  @media screen and (max-height: 450px) {
+    .sidenav {
+      padding-top: 15px;
+      width: 250px;
+    }
+    .sidenav a {
+      font-size: 18px;
+    }
+  }
+
+  .draggable-label {
+    cursor: grab;
+    -webkit-user-drag: element;
+  }
+  
+  .draggable-label.dragging {
+    cursor: grabbing;
+    -webkit-user-drag: element;
+  }
+ /* CSS for draggable labels */
+ .draggable-label {
+  cursor: move;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #000;
+  padding: 5px;
+  z-index: 100;
+ }

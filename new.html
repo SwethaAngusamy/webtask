@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" type="text/css" href="new.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://kit.fontawesome.com/c32802437a.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  
+  
+    
+ <style>
+    .draggable {
+      cursor: grab;
+      position: absolute;
+      background-color: white;
+      border: 1px solid #000;
+      padding: 5px;
+    }
+
+    .draggable-label,
+    .draggable-button {
+      cursor: move;
+      position: absolute;
+      background-color: white;
+      border: 1px solid #000;
+      padding: 5px;
+      z-index: 100;
+    }
+      /* Style for the grip icon */
+    .grip-icon {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: none; /* Initially hidden */
+    }
+  </style>
+  <script>
+    var savedFormPreview = ""; // Variable to store the saved form preview
+  
+    function saveFormPreview() {
+      savedFormPreview = $("#form-preview").html();
+      alert("Form preview saved successfully.");
+    }
+   
+    function previewForm() {
+      if (savedFormPreview) {
+        // Clear the form preview and replace it with the saved content
+        $("#form-preview").html(savedFormPreview);
+        alert("Form preview displayed.");
+      } else {
+        alert("No form preview has been saved yet.");
+      }
+    }
+  
+  
+  
+    </script>
+  <script>
+    $(function () {
+      // Make elements with the "draggable" class draggable
+      $(".draggable").draggable({
+        helper: "clone", // Clone the element when dragging
+      });
+
+      var formPreview = $("#form-preview");
+
+      formPreview.on("dragover", function (event) {
+        event.preventDefault();
+      });
+
+      formPreview.on("drop", function (event) {
+        event.preventDefault();
+        var elementId = event.originalEvent.dataTransfer.getData("text/plain");
+
+        if (elementId === "Label") {
+          // Create a label element and make it draggable
+          const label = document.createElement("div");
+          label.innerText = "";
+          label.classList.add("draggable");
+          label.classList.add("draggable-label");
+          label.setAttribute("draggable", "true");
+
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "";
+
+          label.appendChild(input);
+
+          // Position the label at the cursor location
+          const left = event.originalEvent.layerX;
+          const top = event.originalEvent.layerY;
+
+          label.style.left = left + "px";
+          label.style.top = top + "px";
+
+          formPreview.append(label);
+
+          // Make the new label draggable using jQuery UI
+          $(".draggable-label").draggable();
+        }
+        else if (elementId === "Image") {
+  // Create an image element
+  const image = document.createElement("img");
+  image.src = "your-image-source.jpg"; // Set the image source
+  
+  image.classList.add("draggable");
+  image.setAttribute("draggable", "true");
+
+  // Create a grip icon element
+  const gripIcon = document.createElement("i");
+  gripIcon.classList.add("fa-solid");
+  gripIcon.classList.add("fa-grip-vertical");
+  gripIcon.classList.add("grip-icon");
+
+  // Set the position of the image and grip icon
+  const left = event.originalEvent.layerX;
+  const top = event.originalEvent.layerY;
+
+  image.style.left = left + "px";
+  image.style.top = top + "px";
+
+  // Append the image and grip icon to the form preview
+  formPreview.append(image);
+  formPreview.append(gripIcon);
+
+  // Make the new image draggable using jQuery UI
+  $(".draggable").draggable();
+
+  // Show the grip icon when you touch the image element
+  image.addEventListener("touchstart", function() {
+    gripIcon.style.display = "block";
+  });
+}
+
+        else if (elementId === "Button") {
+  // Create a button element
+  const button = document.createElement("button");
+  button.innerText = "Button";
+  button.classList.add("draggable");
+  button.classList.add("draggable-button");
+  button.setAttribute("draggable", "true");
+
+  // Set the initial position of the button to 0,0
+  button.style.left = 0;
+  button.style.top = 0;
+
+  formPreview.append(button);
+
+  // Make the new button draggable using jQuery UI
+  button.addEventListener('mousedown', function(event) {
+    var offsetX = event.clientX - button.getBoundingClientRect().left;
+    var offsetY = event.clientY - button.getBoundingClientRect().top;
+
+    document.addEventListener('mousemove', moveButton);
+
+    document.addEventListener('mouseup', function() {
+      document.removeEventListener('mousemove', moveButton);
+    });
+
+    function moveButton(event) {
+      var x = event.clientX - offsetX;
+      var y = event.clientY - offsetY;
+      button.style.left = x + 'px';
+      button.style.top = y + 'px';
+    }
+  });
+}
+
+
+        else if (elementId === "Text Box") {
+  // Create a text box element using input with type "text"
+  const textbox = document.createElement("input");
+  textbox.type = "text";
+  textbox.value = "textbox"; // Set the initial value if needed
+  textbox.classList.add("draggable");
+  textbox.classList.add("draggable-textbox");
+  textbox.setAttribute("draggable", "true");
+
+  // Position the text box at the cursor location
+  const left = event.originalEvent.layerX;
+  const top = event.originalEvent.layerY;
+
+  textbox.style.left = left + "px";
+  textbox.style.top = top + "px";
+
+  formPreview.append(textbox);
+
+  // Make the new text box draggable using jQuery UI
+  $(".draggable-textbox").draggable({
+    containment: formPreview,
+    drag: function (event, ui) {
+      // Update the left and top positions as you drag
+      $(this).css("left", ui.position.left + "px");
+      $(this).css("top", ui.position.top + "px");
+    },
+  });
+   // Allow modifying the position of the text box by clicking on it
+   textbox.addEventListener('mousedown', function (event) {
+            var offsetX = event.clientX - textbox.getBoundingClientRect().left;
+            var offsetY = event.clientY - textbox.getBoundingClientRect().top;
+
+            document.addEventListener('mousemove', moveTextbox);
+
+            document.addEventListener('mouseup', function () {
+              document.removeEventListener('mousemove', moveTextbox);
+            });
+
+            function moveTextbox(event) {
+              var x = event.clientX - offsetX;
+              var y = event.clientY - offsetY;
+              textbox.style.left = x + 'px';
+              textbox.style.top = y + 'px';
+            }
+          });
+}
+
+        else if (elementId === "Check Box") {
+          // Create a checkbox element
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.classList.add("draggable");
+          checkbox.classList.add("draggable-checkbox");
+          checkbox.setAttribute("draggable", "true");
+
+          // Position the checkbox at the cursor location
+          const left = event.originalEvent.layerX;
+          const top = event.originalEvent.layerY;
+
+          checkbox.style.left = left + "px";
+          checkbox.style.top = top + "px";
+
+          formPreview.append(checkbox);
+
+           // Make the new checkbox draggable using jQuery UI
+           $(".draggable-checkbox").draggable({
+            containment: formPreview, // Allow movement within the form preview area
+          });  
+             // Allow modifying the position of the checkbox by clicking on it
+  checkbox.addEventListener('mousedown', function (event) {
+    var offsetX = event.clientX - checkbox.getBoundingClientRect().left;
+    var offsetY = event.clientY - checkbox.getBoundingClientRect().top;
+
+    document.addEventListener('mousemove', moveCheckbox);
+
+    document.addEventListener('mouseup', function () {
+      document.removeEventListener('mousemove', moveCheckbox);
+    });
+
+    function moveCheckbox(event) {
+      var x = event.clientX - offsetX;
+      var y = event.clientY - offsetY;
+      checkbox.style.left = x + 'px';
+      checkbox.style.top = y + 'px';
+    }
+  });  
+          }
+          else if (elementId === "Radio Button") {
+          // Create a radio button element
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.classList.add("draggable");
+          radio.classList.add("draggable-radio");
+          radio.setAttribute("draggable", "true");
+
+          // Position the radio button at the cursor location
+          const left = event.originalEvent.layerX;
+          const top = event.originalEvent.layerY;
+
+          radio.style.left = left + "px";
+          radio.style.top = top + "px";
+
+          formPreview.append(radio);
+
+          // Make the new radio button draggable using jQuery UI
+          $(".draggable-radio").draggable();
+           // Allow modifying the position of the radio button by clicking on it
+  radio.addEventListener('mousedown', function (event) {
+    var offsetX = event.clientX - radio.getBoundingClientRect().left;
+    var offsetY = event.clientY - radio.getBoundingClientRect().top;
+
+    document.addEventListener('mousemove', moveRadio);
+
+    document.addEventListener('mouseup', function () {
+      document.removeEventListener('mousemove', moveRadio);
+    });
+
+    function moveRadio(event) {
+      var x = event.clientX - offsetX;
+      var y = event.clientY - offsetY;
+      radio.style.left = x + 'px';
+      radio.style.top = y + 'px';
+    }
+  });
+}
+          
+
+      else if (elementId === "Table") {
+    // Prompt the user for the number of columns and header names
+    const numColumns = parseInt(prompt("Enter the number of columns:"));
+    if (isNaN(numColumns) || numColumns < 1) {
+        alert("Please enter a valid number of columns.");
+        return;
+    }
+
+    const numRows = parseInt(prompt("Enter the number of rows:"));
+    if (isNaN(numRows) || numRows < 1) {
+        alert("Please enter a valid number of rows.");
+        return;
+    }
+
+    const headerNames = [];
+    for (let i = 0; i < numColumns; i++) {
+        const header = prompt(`Enter header name for column ${i + 1}:`);
+        headerNames.push(header);
+    }
+
+    // Create a resizable table container
+    const tableContainer = document.createElement("div");
+    tableContainer.classList.add("draggable-table-container");
+
+    // Create a droppable table element inside the container
+    const table = document.createElement("div");
+    table.classList.add("draggable");
+    table.classList.add("draggable-table");
+    table.setAttribute("draggable", "true");
+
+    // Create a table inside the div
+    const innerTable = document.createElement("table");
+    table.appendChild(innerTable);
+
+    // Create the table header
+    const headerRow = document.createElement("tr");
+    for (const headerName of headerNames) {
+        const th = document.createElement("th");
+        th.innerText = headerName;
+        headerRow.appendChild(th);
+    }
+    innerTable.appendChild(headerRow);
+
+    // Create rows and columns with resizable handles
+    for (let row = 0; row < numRows; row++) {
+        const newRow = document.createElement("tr");
+        for (let col = 0; col < numColumns; col++) {
+            const cell = document.createElement("td");
+            const cellInput = document.createElement("input");
+            cellInput.type = "text";
+            cell.appendChild(cellInput);
+            newRow.appendChild(cell);
+        }
+        innerTable.appendChild(newRow);
+    }
+
+    // Append the table to the container
+    tableContainer.appendChild(table);
+    formPreview.append(tableContainer);
+    // Make the new table draggable using jQuery UI
+    $(".draggable-table").draggable();
+
+    // Make the table container resizable
+    $(tableContainer).resizable({
+        handles: "se",
+        alsoResize: table, // Resize the table as well
+    });
+    // Make the table resizable
+    $(table).resizable({
+        alsoResize: innerTable, // Resize the inner table
+    });
+    // Make the inner table's cells resizable
+    $(innerTable).find("input").resizable();
+
+    formPreview.append(table);
+}
+
+else if (elementId === "Navigation") {
+    // Create a navigation link element and make it draggable
+    const navigationLink = document.createElement("a");
+    navigationLink.innerText = "Navigation Link";
+    navigationLink.classList.add("draggable");
+    navigationLink.setAttribute("draggable", "true");
+    navigationLink.classList.add("draggable-navigation-link");
+    navigationLink.setAttribute("contenteditable", "true"); // Make it editable
+
+    // Add a double-click event to make the text editable
+    navigationLink.addEventListener('dblclick', function() {
+      navigationLink.setAttribute("contenteditable", "true");
+      navigationLink.focus();
+    });
+
+    // Add a blur event to save changes and disable editing when focus is lost
+    navigationLink.addEventListener('blur', function() {
+      navigationLink.removeAttribute("contenteditable");
+    });
+
+    formPreview.append(navigationLink);
+
+    // Make the new navigation link draggable using jQuery UI
+    $(".draggable-navigation-link").draggable();
+}
+
+      });
+    });
+    
+  </script>
+</head>
+
+<body>
+  <!-- Your existing code -->
+
+  <div id="mySidenav" class="sidenav">
+    <!-- Your sidenav content -->
+    <h1 style=color:white>form designer</h1>
+
+    <a href="#" draggable="true" ondragstart="drag(event, 'Layout')">
+        <i class="fa-brands fa-slack"></i> Layout</a>
+
+
+    <a href="#" draggable="true" ondragstart="drag(event, 'Label')">
+        <i class="fa-solid fa-tags"></i> Label</a>
+
+    
+    <a href="#" draggable="true" ondragstart="drag(event, 'Button')">
+        <i class="fa-solid fa-mobile-button"></i> Button</a>
+
+    <a href="#" draggable="true" ondragstart="drag(event, 'Text Box')">
+        <i class="fa-solid fa-table-cells-large"></i> Text Box</a>
+
+    <a href="#" draggable="true" ondragstart="drag(event, 'Check Box')">
+        <i class="fa-regular fa-square"></i> Check Box</a>
+
+    <a href="#" draggable="true" ondragstart="drag(event, 'Radio Button')">
+        <i class="fa-regular fa-circle"></i> Radio Button</a>
+
+    <a href="#" draggable="true" ondragstart="drag(event, 'Table')">
+        <i class="fa-solid fa-table"></i> Table</a>
+
+    <a href="#" draggable="true" ondragstart="drag(event, 'Navigation')">
+        <i class="fa-solid fa-paperclip"></i> Navigation link</a>
+
+    <a href="#" draggable="true" ondragstart="drag(event, 'Image')">
+        <i class="fa-regular fa-images"></i> Image</a>
+   
+  </div>
+  <!-- Draggable Elements -->
+  <div class="draggable" draggable="true">Drag Me</div>
+
+  <!-- Droppable Area -->
+  <div class="droppable">Drop Here</div>
+
+  </div>
+
+  <div class="sidenav-buttons">
+    <button class="publish-button">Publish</button>
+    <button class="preview-button" id="preview-button">Preview</button>
+  </div>
+
+  <div id="form-preview" ondrop="drop(event)" ondragover="allowDrop(event)" style="position: relative;">
+    <!-- Your form content -->
+  </div>
+
+  <div class="down-buttons">
+    <button class="button1" id="clear-button" onclick="clearFormPreview()">Clear</button>
+    <button id="save-button" onclick="saveFormPreview()">Save</button>
+  </div>
+  
+
+  <!-- Your existing code -->
+
+
+  <!-- Your existing code -->
+  <script src="new.js"></script>
+</body>
+
+</html>
